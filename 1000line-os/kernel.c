@@ -4,7 +4,8 @@
 extern char __bss[], __bss_end[], __stack_top[];
 
 struct sbiret sbi_call(long arg0, long arg1, long arg2, long arg3, long arg4,
-                       long arg5, long fid, long eid){
+                       long arg5, long fid, long eid)
+{
     register long a0 __asm__("a0") = arg0;
     register long a1 __asm__("a1") = arg1;
     register long a2 __asm__("a2") = arg2;
@@ -22,27 +23,32 @@ struct sbiret sbi_call(long arg0, long arg1, long arg2, long arg3, long arg4,
     return (struct sbiret){.error = a0, .value = a1};
 }
 
-void putchar(char c) {
+void putchar(char c)
+{
     sbi_call(c, 0, 0, 0, 0, 0, 0, 1 /* Console Putchar */);
 }
 
-void kernel_main(void) {
+void kernel_main(void)
+{
     printf("\n\nHello World!\n");
     printf("1 + 2 = %d, %x\n", 1 + 2, 0x1234abcd);
 
-    for(;;) {
+    printf("strcmp(\"same\", \"same\") => %d\n", strcmp("same", "same"));
+    printf("strcmp(\"same\", \"diff\") => %d\n", strcmp("same", "diff"));
+
+    for (;;)
+    {
         __asm__ __volatile__("wfi");
     }
 }
 
 __attribute__((section(".text.boot")))
-__attribute__((naked))
-void boot(void) {
+__attribute__((naked)) void
+boot(void)
+{
     __asm__ __volatile__(
         "mv sp, %[stack_top]\n"
         "j kernel_main\n"
         :
-        : [stack_top] "r" (__stack_top)
-    );
+        : [stack_top] "r"(__stack_top));
 }
-
