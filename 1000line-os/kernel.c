@@ -36,6 +36,9 @@ void kernel_main(void)
     printf("strcmp(\"same\", \"same\") => %d\n", strcmp("same", "same"));
     printf("strcmp(\"same\", \"diff\") => %d\n", strcmp("same", "diff"));
 
+    PANIC("booted!");
+    printf("unreachable here!\n");
+
     for (;;)
     {
         __asm__ __volatile__("wfi");
